@@ -5,6 +5,15 @@
  Напишите аналог встроенного метода forEach для работы с массивами
  */
 function forEach(array, fn) {
+    if(typeof(fn) !== "function") {
+        throw new Error("fn is not a function");
+    }
+    if(!Array.isArray(array) || array.length === 0){
+        throw new Error("empty array");
+    }
+    for(var i = 0; i < array.length; i++){
+        fn(array[i], i, array);
+    }
 }
 
 /*
@@ -12,6 +21,17 @@ function forEach(array, fn) {
  Напишите аналог встроенного метода map для работы с массивами
  */
 function map(array, fn) {
+    var mappedArray = [];
+    if(typeof(fn) !== "function") {
+        throw new Error("fn is not a function");
+    }
+    if(!Array.isArray(array) || array.length === 0){
+        throw new Error("empty array");
+    }
+    for(var i = 0; i < array.length; i++){
+        mappedArray.push(fn(array[i], i, array));
+    }
+    return mappedArray;
 }
 
 /*
@@ -19,7 +39,29 @@ function map(array, fn) {
  Напишите аналог встроенного метода reduce для работы с массивами
  */
 function reduce(array, fn, initial) {
+    var result;
+    if(typeof(fn) !== "function") {
+        throw new Error("fn is not a function");
+    }
+    if(!Array.isArray(array) || array.length === 0){
+        throw new Error("empty array");
+    }
+    if(initial){
+        result = initial;
+        for(var i = 0; i < array.length; i++){
+            result = fn(result, array[i], i, array);
+        }
+    }
+    else {
+        result = array[0];
+        for(var i = 1; i < array.length; i++){
+            result = fn(result, array[i], i, array);
+        }
+    }
+
+    return result;
 }
+
 
 /*
  Задача 4:
@@ -27,6 +69,8 @@ function reduce(array, fn, initial) {
  Функция должна удалить указанное свойство из указанного объекта
  */
 function deleteProperty(obj, prop) {
+    delete obj[prop];
+    return obj;
 }
 
 /*
@@ -35,6 +79,7 @@ function deleteProperty(obj, prop) {
  Функция должна проверить существует ли укзаанное свойство в указанном объекте
  */
 function hasProperty(obj, prop) {
+    return obj.hasOwnProperty(prop);
 }
 
 /*
@@ -42,29 +87,27 @@ function hasProperty(obj, prop) {
  Функция должна получить все перечисляемые свойства объекта и вернуть их в виде массива
  */
 function getEnumProps(obj) {
+    var enums = [];
+    for(var prop in obj){
+        if(obj.propertyIsEnumerable(prop)){
+            enums.push(prop);
+        }
+    }
+    return enums;
 }
-
 /*
  Задача 7:
  Функция должна перебрать все свойства объекта, преобразовать их имена в верхний регистра и вернуть в виде массива
  */
 function upperProps(obj) {
+    var upperCaseProps = [];
+    for(var prop in obj){
+        upperCaseProps.push(prop.toUpperCase());
+    }
+    return upperCaseProps;
 }
 
-/*
- Задача 8 *:
- Напишите аналог встроенного метода slice для работы с массивами
- */
-function slice(array, from, to) {
-}
 
-/*
- Задача 9 *:
- Функция принимает объект и должна вернуть Proxy для этого объекта
- Proxy должен перехватывать все попытки записи значений свойств и возводить это значение в квадрат
- */
-function createProxy(obj) {
-}
 
 export {
     forEach,
@@ -73,7 +116,5 @@ export {
     deleteProperty,
     hasProperty,
     getEnumProps,
-    upperProps,
-    slice,
-    createProxy
+    upperProps
 };
