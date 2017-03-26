@@ -51,38 +51,69 @@ function emulateClick(target) {
  */
 function delegate(target, fn) {
 
-    target.addEventListener('click', (e) => {
-        if (e.target.tagName == 'BUTTON'){
-            fn();
-        }
-    })
 
+    return result;
 }
 
 /**
- * *** Со звездочкой ***
- * Функция должна добавить такой обработчик кликов к элементу target
- * который сработает только один раз и удалится
- * Постарайтесь не создавать глобальных переменных
+ * Функция должна перебрать все дочерние узлы элемента where
+ * и удалить из него все текстовые узлы
+ * Без рекурсии!
+ * Будьте внимательны при удалении узлов,
+ * можно получить неожиданное поведение при переборе узлов
  *
- * @param {Element} target - элемент, на который нужно добавить обработчик
- * @param {function} fn - обработчик
+ * @param {Element} where - где искать
+ *
+ * @example
+ * после выполнения функции, дерево <div></div>привет<p></p>loftchool!!!
+ * должно быть преобразовано в <div></div><p></p>
  */
-function once(target, fn) {
-    function handler(e){
-        fn();
-        target.removeEventListener('click', handler);
+function deleteTextNodes(where) {
+    var nodes = where.childNodes;
+    for (var child of nodes){
+        if (child.nodeType == 3){
+            where.removeChild(child);
+
+        }
+    })
+
+
+/**
+ * Выполнить предудыщее задание с использование рекурсии
+ * то есть необходимо заходить внутрь каждого дочернего элемента
+ *
+ * @param {Element} where - где искать
+ *
+ * @example
+ * после выполнения функции, дерево <span> <div> <b>привет</b> </div> <p>loftchool</p> !!!</span>
+ * должно быть преобразовано в <span><div><b></b></div><p></p></span>
+ */
+function deleteTextNodesRecursive(where) {
+    var nodes = where.childNodes;
+    for (let i = 0; i< nodes.length; i++){
+        if(nodes[i].nodeType == 1) {
+            deleteTextNodesRecursive(nodes[i]);
+        }
+
+        if(nodes[i].nodeType == 3) {
+            where.removeChild(nodes[i]);
+            i--;
+        }
+
     }
 
-    target.addEventListener('click', handler);
 }
 
+
+
 export {
-    addListener,
-    removeListener,
-    skipDefault,
-    emulateClick,
-    delegate,
-    once
+
+    createDivWithText,
+    createAWithHref,
+    prepend,
+    findAllPSiblings,
+    findError,
+    deleteTextNodes,
+    deleteTextNodesRecursive
 
 };
